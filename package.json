@@ -5,7 +5,10 @@
     "lint": "eslint ./src",
     "setup": "./bin/setup-dockerized-services.sh",
     "start-prod": "NODE_ENV=production ts-node src/index.ts",
-    "start-dev": "nodemon src/index.ts"
+    "start-dev": "nodemon src/index.ts",
+    "migrate": "npx prisma migrate dev --name init --preview-feature",
+    "sync": "prisma generate",
+    "studio": "npx prisma studio"
   },
   "devDependencies": {
     "@dvukovic/eslint-config": "^5.2.2",
