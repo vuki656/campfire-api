@@ -1,0 +1,19 @@
+{
+  "name": "campfire-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/vuki656/campfire-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vuki656/campfire-api/issues"
+  },
+  "homepage": "https://github.com/vuki656/campfire-api#readme"
+}
