@@ -11,8 +11,8 @@ model User {
     id       String  @id @default(uuid())
     username String  @unique
     imageURL String
-    Group    Group[]
-    Post     Post[]
+    groups   Group[]
+    posts    Post[]
 }
 
 model Group {
@@ -20,7 +20,7 @@ model Group {
     name     String
     emoji    String
     authorId String
-    Post     Post[]
+    posts    Post[]
     author   User   @relation(fields: [authorId], references: [id])
 }
 

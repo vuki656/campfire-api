@@ -1,25 +1,31 @@
 {
-  "name": "campfire-api",
-  "version": "1.0.0",
-  "scripts": {
-    "lint": "eslint ./src",
-    "setup": "./bin/setup-dockerized-services.sh",
-    "start-prod": "NODE_ENV=production ts-node src/index.ts",
-    "start-dev": "nodemon src/index.ts",
-    "migrate": "npx prisma migrate dev --name init --preview-feature",
-    "sync": "prisma generate",
-    "studio": "npx prisma studio"
-  },
-  "devDependencies": {
-    "@dvukovic/eslint-config": "^5.2.2",
-    "@types/node": "^14.14.31",
-    "@typescript-eslint/parser": "^4.15.1",
-    "prisma": "2.17.0",
-    "ts-node": "^9.1.1",
-    "typescript": "^4.1.5"
-  },
-  "dependencies": {
-    "@prisma/client": "2.17.0",
-    "dotenv": "^8.2.0"
-  }
+    "name": "campfire-api",
+    "version": "1.0.0",
+    "scripts": {
+        "lint": "eslint ./src",
+        "setup": "./bin/setup-dockerized-services.sh",
+        "start-prod": "NODE_ENV=production ts-node src/index.ts",
+        "start-dev": "nodemon src/index.ts",
+        "migrate": "npx prisma migrate dev --name init --preview-feature",
+        "sync": "prisma generate",
+        "studio": "npx prisma studio"
+    },
+    "dependencies": {
+        "@prisma/client": "2.17.0",
+        "apollo-server": "^2.21.0",
+        "dotenv": "^8.2.0",
+        "graphql": "^15.5.0",
+        "reflect-metadata": "^0.1.13",
+        "type-graphql": "^1.1.1"
+    },
+    "devDependencies": {
+        "@dvukovic/eslint-config": "^5.3.1",
+        "@types/node": "^14.14.31",
+        "@typescript-eslint/parser": "^4.15.1",
+        "eslint": "^7.20.0",
+        "nodemon": "^2.0.7",
+        "prisma": "2.17.0",
+        "ts-node": "^9.1.1",
+        "typescript": "^4.1.5"
+    }
 }
