@@ -8,8 +8,14 @@ import {
 
 import { ContextType } from '../../types'
 
-import { CreateUserInput } from './mutations/inputs'
-import { CreateUserPayload } from './mutations/payloads'
+import {
+    CreateUserInput,
+    LogInUserInput,
+} from './mutations/inputs'
+import {
+    CreateUserPayload,
+    LogInUserPayload,
+} from './mutations/payloads'
 import { UserArgs } from './queries/Args'
 import { UserType } from './types'
 import { UserService } from './User.service'
@@ -36,6 +42,14 @@ export class UserResolver {
         @Ctx() context: ContextType
     ): Promise<CreateUserPayload> {
         return this.service.create(input, context)
+    }
+
+    @Mutation(() => LogInUserPayload)
+    public async logInUser(
+        @Arg('input') input: LogInUserInput,
+        @Ctx() context: ContextType,
+    ): Promise<LogInUserPayload> {
+        return this.service.logIn(input, context)
     }
 
 }
