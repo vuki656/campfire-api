@@ -10,6 +10,6 @@ export class CreateUserInput {
     username: string
 
     @Field()
-    imageURL: string
+    password: string
 
 }

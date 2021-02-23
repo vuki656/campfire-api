@@ -1,9 +1,12 @@
 import {
     Arg,
+    Ctx,
     Mutation,
     Query,
     Resolver,
 } from 'type-graphql'
+
+import { ContextType } from '../../types'
 
 import { CreateUserInput } from './mutations/inputs'
 import { CreateUserPayload } from './mutations/payloads'
@@ -23,15 +26,16 @@ export class UserResolver {
     @Query(() => UserType, { nullable: true })
     public async user(
         @Arg('args') args: UserArgs
-    ) {
+    ): Promise<UserType | null> {
         return this.service.findOne(args)
     }
 
     @Mutation(() => CreateUserPayload)
     public async createUser(
-        @Arg('input') input: CreateUserInput
-    ) {
-        return this.service.create(input)
+        @Arg('input') input: CreateUserInput,
+        @Ctx() context: ContextType
+    ): Promise<CreateUserPayload> {
+        return this.service.create(input, context)
     }
 
 }

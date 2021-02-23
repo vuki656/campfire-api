@@ -11,6 +11,7 @@ model User {
     id       String  @id @default(uuid())
     username String  @unique
     imageURL String
+    password String
     groups   Group[]
     posts    Post[]
 }

@@ -11,8 +11,15 @@ export class CreateUserPayload {
     @Field()
     user: UserType
 
-    constructor(user: UserType) {
+    @Field()
+    token: string
+
+    constructor(
+        user: UserType,
+        token: string
+    ) {
         this.user = user
+        this.token = token
     }
 
 }

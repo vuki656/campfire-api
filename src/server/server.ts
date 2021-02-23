@@ -8,7 +8,6 @@ export const prisma = new PrismaClient()
 const server = new ApolloServer({
     context: ({ req }) => {
         return {
-            prisma: prisma,
             secret: process.env.JWT_SECRET,
             token: req.headers.token,
         }
