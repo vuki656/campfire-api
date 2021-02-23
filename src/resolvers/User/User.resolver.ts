@@ -1,5 +1,6 @@
 import {
     Arg,
+    Authorized,
     Ctx,
     Mutation,
     Query,
@@ -29,6 +30,7 @@ export class UserResolver {
         this.service = new UserService()
     }
 
+    @Authorized()
     @Query(() => UserType, { nullable: true })
     public async user(
         @Arg('args') args: UserArgs
