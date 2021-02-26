@@ -5,6 +5,7 @@ import { getSchema } from './schema'
 
 export const prisma = new PrismaClient()
 
+// TODO: DECODE USER ID FROM TOKEN AND PUT IN IN CONTEXT
 const server = new ApolloServer({
     context: ({ req }) => {
         return {

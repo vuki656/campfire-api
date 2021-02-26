@@ -259,15 +259,16 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@dvukovic/eslint-config@^5.3.1":
-  version "5.3.1"
-  resolved "https://registry.yarnpkg.com/@dvukovic/eslint-config/-/eslint-config-5.3.1.tgz#47162e6207982887437b1f81011ff717bb3a2684"
-  integrity sha512-6IY19CaTaDdfSzHEVko8nMLtt9ePtWxnShQqiEGZS4ZwyhUEw9LHC6CVmQf08cxGk/D7ldYcJYOqfMPQd6CH2g==
+"@dvukovic/eslint-config@^5.4.0":
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/@dvukovic/eslint-config/-/eslint-config-5.4.0.tgz#375173438126631797ddaa19575a2ddf0e4cf960"
+  integrity sha512-qzAFU0U3HRs6rDe8WSKiDitOtidYMBc2eBEdsUHVq2aU/Lc3hdQWHFOa4yUS4Ekf8rRlr1C+FP3ib6GCROgC/w==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^4.14.1"
     "@typescript-eslint/parser" "^4.14.1"
     eslint "^7.19.0"
     eslint-plugin-import "^2.22.1"
+    eslint-plugin-indent-class-properties "^1.0.3"
     eslint-plugin-modules-newline "^0.0.6"
     eslint-plugin-promise "^4.2.1"
     eslint-plugin-react "^7.22.0"
@@ -1625,6 +1626,13 @@ eslint-plugin-import@^2.22.1:
     read-pkg-up "^2.0.0"
     resolve "^1.17.0"
     tsconfig-paths "^3.9.0"
+
+eslint-plugin-indent-class-properties@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-indent-class-properties/-/eslint-plugin-indent-class-properties-1.0.3.tgz#6f4c1a162c1c8188ecab9af77682045c89f9dc1b"
+  integrity sha512-LQJpLbi+adXsi22jpKaFFFO9cdNUaMhyXyMnQ0P3mSz21P78yNj+IKmXN/1XS9FUX8mYgny/xHRLYKyGOxmWag==
+  dependencies:
+    requireindex "~1.1.0"
 
 eslint-plugin-modules-newline@^0.0.6:
   version "0.0.6"

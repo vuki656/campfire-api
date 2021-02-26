@@ -23,7 +23,7 @@
         "validator": "^13.5.2"
     },
     "devDependencies": {
-        "@dvukovic/eslint-config": "^5.3.1",
+        "@dvukovic/eslint-config": "^5.4.0",
         "@types/bcryptjs": "^2.4.2",
         "@types/jsonwebtoken": "^8.5.0",
         "@types/node": "^14.14.31",

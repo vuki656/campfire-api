@@ -17,12 +17,12 @@ model User {
 }
 
 model Group {
-    id       String @id @default(uuid())
-    name     String
-    emoji    String
-    authorId String
-    posts    Post[]
-    author   User   @relation(fields: [authorId], references: [id])
+    id        String   @id @default(uuid())
+    name      String
+    authorId  String
+    createdAt DateTime @default(now())
+    posts     Post[]
+    author    User     @relation(fields: [authorId], references: [id])
 }
 
 model Post {

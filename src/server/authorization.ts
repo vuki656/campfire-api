@@ -8,7 +8,6 @@ const SECRET = process.env.JWT_SECRET
 
 export const authChecker: AuthChecker<ContextType> = (resolverData): boolean => {
     const authPayload = resolverData.context.token
-
     if (!SECRET) {
         return false
     }
