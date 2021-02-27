@@ -8,21 +8,26 @@ generator client {
 }
 
 model User {
-    id       String  @id @default(uuid())
-    username String  @unique
+    id       String @id @default(uuid())
+    username String @unique
     imageURL String
     password String
-    groups   Group[]
-    posts    Post[]
+
+    posts         Post[]
+    joinedGroups  Group[]
+    createdGroups Group[] @relation("author")
 }
 
 model Group {
     id        String   @id @default(uuid())
     name      String
-    authorId  String
     createdAt DateTime @default(now())
-    posts     Post[]
-    author    User     @relation(fields: [authorId], references: [id])
+
+    posts Post[]
+    users User[]
+
+    author   User   @relation(name: "author", fields: [authorId], references: [id])
+    authorId String
 }
 
 model Post {
@@ -30,8 +35,10 @@ model Post {
     descriptions String
     link         String
     createdAt    DateTime @default(now())
-    authorId     String
-    groupId      String
-    author       User     @relation(fields: [authorId], references: [id])
-    group        Group    @relation(fields: [groupId], references: [id])
+
+    authorId String
+    author   User   @relation(fields: [authorId], references: [id])
+
+    groupId String
+    group   Group  @relation(fields: [groupId], references: [id])
 }

@@ -18,6 +18,7 @@ export class GroupService {
             },
             include: {
                 author: true,
+                posts: true,
             },
         })
 
@@ -31,6 +32,25 @@ export class GroupService {
             },
             where: {
                 authorId: userId,
+            },
+        })
+
+        return groups.map((group) => {
+            return new GroupType(group)
+        })
+    }
+
+    public async findJoined(userId: string) {
+        const groups = await prisma.group.findMany({
+            include: {
+                author: true,
+            },
+            where: {
+                users: {
+                    some: {
+                        id: userId,
+                    },
+                },
             },
         })
 

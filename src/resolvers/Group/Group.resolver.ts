@@ -4,12 +4,14 @@ import {
     Authorized,
     Ctx,
     Mutation,
+    Query,
 } from 'type-graphql'
 
 import { GroupService } from '.'
 
 import { CreateGroupInput } from './mutations/inputs'
 import { CreateGroupPayload } from './mutations/payloads'
+import { GroupType } from './types'
 
 export class GroupResolver {
 
@@ -26,6 +28,22 @@ export class GroupResolver {
         @Ctx() context: ContextType
     ): Promise<CreateGroupPayload> {
         return this.service.create(input, context)
+    }
+
+    @Authorized()
+    @Query(() => [GroupType])
+    public async userGroups(
+        @Ctx() context: ContextType
+    ): Promise<GroupType[]> {
+        return this.service.findAll(context.userId)
+    }
+
+    @Authorized()
+    @Query(() => [GroupType])
+    public async userJoinedGroups(
+        @Ctx() context: ContextType
+    ): Promise<GroupType[]> {
+        return this.service.findJoined(context.userId)
     }
 
 }
