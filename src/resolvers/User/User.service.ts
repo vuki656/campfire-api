@@ -13,17 +13,13 @@ import type {
     CreateUserInput,
     LogInUserInput,
 } from './mutations/inputs'
-import {
-    CreateUserPayload,
-    LogInUserPayload,
-} from './mutations/payloads'
-import type { UserArgs } from './queries/Args'
+import { LogInUserPayload } from './mutations/payloads'
 import { UserType } from './types'
 
 export class UserService {
 
-    public async findOne(args: UserArgs) {
-        const user = await prisma.user.findUnique({ where: { id: args.id } })
+    public async findOne(userId: string) {
+        const user = await prisma.user.findUnique({ where: { id: userId } })
 
         if (!user) {
             return null
@@ -36,20 +32,20 @@ export class UserService {
         input: LogInUserInput,
         context: ContextType
     ) {
-        const user = await prisma.user.findUnique({ where: { username: input.username } })
+        let user = await prisma.user.findUnique({ where: { username: input.username } })
 
         if (!user) {
-            throw new UserInputError('Invalid credentials')
-        }
+            user = await this.create(input)
+        } else {
+            const isPasswordValid = compareSync(input.password, user.password)
 
-        const isPasswordValid = compareSync(input.password, user.password)
-
-        if (!isPasswordValid) {
-            throw new UserInputError('Invalid credentials')
+            if (!isPasswordValid) {
+                throw new UserInputError('Error', { password: 'Wrong password.' })
+            }
         }
 
         const signedToken = sign(
-            { username: user?.username },
+            { userId: user.id },
             context.secret,
             { expiresIn: '7 days' }
         )
@@ -57,16 +53,7 @@ export class UserService {
         return new LogInUserPayload(signedToken)
     }
 
-    public async create(
-        input: CreateUserInput,
-        context: ContextType
-    ) {
-        const userExists = await prisma.user.findUnique({ where: { username: input.username } })
-
-        if (userExists) {
-            throw new UserInputError('Username already exists')
-        }
-
+    public async create(input: CreateUserInput) {
         const passwordHash = await hash(input.password, 10)
 
         const imageURL = await fetch('https://dog.ceo/api/breeds/image/random')
@@ -84,13 +71,7 @@ export class UserService {
             },
         })
 
-        const token = sign(
-            { username: user.username },
-            context.secret,
-            { expiresIn: '7 days' }
-        )
-
-        return new CreateUserPayload(user, token)
+        return user
     }
 
 }

@@ -9,15 +9,8 @@ import {
 
 import { ContextType } from '../../types'
 
-import {
-    CreateUserInput,
-    LogInUserInput,
-} from './mutations/inputs'
-import {
-    CreateUserPayload,
-    LogInUserPayload,
-} from './mutations/payloads'
-import { UserArgs } from './queries/Args'
+import { LogInUserInput } from './mutations/inputs'
+import { LogInUserPayload } from './mutations/payloads'
 import { UserType } from './types'
 import { UserService } from './User.service'
 
@@ -33,17 +26,9 @@ export class UserResolver {
     @Authorized()
     @Query(() => UserType, { nullable: true })
     public async user(
-        @Arg('args') args: UserArgs
+        @Ctx() context: ContextType,
     ): Promise<UserType | null> {
-        return this.service.findOne(args)
-    }
-
-    @Mutation(() => CreateUserPayload)
-    public async createUser(
-        @Arg('input') input: CreateUserInput,
-        @Ctx() context: ContextType
-    ): Promise<CreateUserPayload> {
-        return this.service.create(input, context)
+        return this.service.findOne(context.userId)
     }
 
     @Mutation(() => LogInUserPayload)

@@ -1,8 +1,9 @@
-import { UserType } from 'src/resolvers/User/types'
 import {
     Field,
     ObjectType,
 } from 'type-graphql'
+
+import { UserType } from '../../User/types'
 
 @ObjectType()
 export class GroupType {

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#"!/usr/bin/env bash
 
 # Get the bin folder base directory
 BASEDIR=$(dirname "$0")

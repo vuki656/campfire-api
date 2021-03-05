@@ -4,9 +4,12 @@ import {
 } from 'type-graphql'
 
 @InputType()
-export class UserArgs {
+export class EditGroupInput {
 
     @Field()
     id: string
+
+    @Field()
+    name: string
 
 }

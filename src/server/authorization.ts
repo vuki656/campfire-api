@@ -4,10 +4,10 @@ import validator from 'validator'
 
 import type { ContextType } from '../types'
 
-const SECRET = process.env.JWT_SECRET
-
 export const authChecker: AuthChecker<ContextType> = (resolverData): boolean => {
     const authPayload = resolverData.context.token
+    const SECRET = process.env.JWT_SECRET as string
+
     if (!SECRET) {
         return false
     }

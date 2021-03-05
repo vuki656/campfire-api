@@ -1,8 +1,15 @@
-import { prisma } from 'src/server'
 import type { ContextType } from 'src/types'
 
-import type { CreateGroupInput } from './mutations/inputs'
-import { CreateGroupPayload } from './mutations/payloads'
+import { prisma } from '../../server'
+
+import type {
+    CreateGroupInput,
+    EditGroupInput,
+} from './mutations/inputs'
+import {
+    CreateGroupPayload,
+    EditGroupPayload,
+} from './mutations/payloads'
 import { GroupType } from './types'
 
 export class GroupService {
@@ -23,6 +30,22 @@ export class GroupService {
         })
 
         return new CreateGroupPayload(group)
+    }
+
+    public async edit(input: EditGroupInput) {
+        const group = await prisma.group.update({
+            data: {
+                name: input.name,
+            },
+            include: {
+                author: true,
+            },
+            where: {
+                id: input.id,
+            },
+        })
+
+        return new EditGroupPayload(group)
     }
 
     public async findAll(userId: string) {

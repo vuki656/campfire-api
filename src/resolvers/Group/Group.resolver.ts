@@ -9,8 +9,14 @@ import {
 
 import { GroupService } from '.'
 
-import { CreateGroupInput } from './mutations/inputs'
-import { CreateGroupPayload } from './mutations/payloads'
+import {
+    CreateGroupInput,
+    EditGroupInput,
+} from './mutations/inputs'
+import {
+    CreateGroupPayload,
+    EditGroupPayload,
+} from './mutations/payloads'
 import { GroupType } from './types'
 
 export class GroupResolver {
@@ -28,6 +34,14 @@ export class GroupResolver {
         @Ctx() context: ContextType
     ): Promise<CreateGroupPayload> {
         return this.service.create(input, context)
+    }
+
+    @Authorized()
+    @Mutation(() => EditGroupPayload)
+    public async editGroup(
+        @Arg('input') input: EditGroupInput,
+    ): Promise<EditGroupPayload> {
+        return this.service.edit(input)
     }
 
     @Authorized()
