@@ -17,6 +17,7 @@
         "dotenv": "^8.2.0",
         "graphql": "^15.5.0",
         "jsonwebtoken": "^8.5.1",
+        "link-preview-js": "^2.1.6",
         "node-fetch": "^2.6.1",
         "reflect-metadata": "^0.1.13",
         "type-graphql": "^1.1.1",
