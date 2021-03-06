@@ -2,6 +2,7 @@ import type { ContextType } from 'src/types'
 
 import { prisma } from '../../server'
 
+import type { GroupArgs } from './args'
 import type {
     CreateGroupInput,
     EditGroupInput,
@@ -25,7 +26,11 @@ export class GroupService {
             },
             include: {
                 author: true,
-                posts: true,
+                posts: {
+                    include: {
+                        author: true,
+                    },
+                },
             },
         })
 
@@ -80,6 +85,31 @@ export class GroupService {
         return groups.map((group) => {
             return new GroupType(group)
         })
+    }
+
+    public async findOne(args: GroupArgs, context: ContextType) {
+        const group = await prisma.group.findUnique({
+            include: {
+                author: true,
+                posts: {
+                    include: {
+                        author: true,
+                    },
+                    orderBy: {
+                        createdAt: 'asc',
+                    },
+                },
+            },
+            where: {
+                id: args.groupId,
+            },
+        })
+
+        if (!group) {
+            return null
+        }
+
+        return new GroupType(group)
     }
 
 }

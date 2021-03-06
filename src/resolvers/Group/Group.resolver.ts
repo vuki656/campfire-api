@@ -5,10 +5,12 @@ import {
     Ctx,
     Mutation,
     Query,
+    Resolver,
 } from 'type-graphql'
 
 import { GroupService } from '.'
 
+import { GroupArgs } from './args'
 import {
     CreateGroupInput,
     EditGroupInput,
@@ -19,12 +21,22 @@ import {
 } from './mutations/payloads'
 import { GroupType } from './types'
 
+@Resolver(() => GroupType)
 export class GroupResolver {
 
     private readonly service: GroupService
 
     constructor() {
         this.service = new GroupService()
+    }
+
+    @Authorized()
+    @Query(() => GroupType, { nullable: true })
+    public async group(
+        @Arg('args') args: GroupArgs,
+        @Ctx() context: ContextType
+    ): Promise<GroupType | null> {
+        return this.service.findOne(args, context)
     }
 
     @Authorized()

@@ -14,8 +14,11 @@ model User {
     password String
 
     posts         Post[]
+
     joinedGroups  Group[]
     createdGroups Group[] @relation("author")
+
+    favourites Favorite[]
 }
 
 model Group {
@@ -31,14 +34,31 @@ model Group {
 }
 
 model Post {
-    id           String   @id @default(uuid())
-    descriptions String
-    link         String
-    createdAt    DateTime @default(now())
+    id          String   @id @default(uuid())
+    description String?
+    link        String
+    createdAt   DateTime @default(now())
+    title       String?
+    siteName    String?
+    faviconLink String?
+    imageLink   String?
+
 
     authorId String
     author   User   @relation(fields: [authorId], references: [id])
 
-    groupId String
-    group   Group  @relation(fields: [groupId], references: [id])
+    groupId     String
+    group       Group      @relation(fields: [groupId], references: [id])
+
+    favoritedBy Favorite[]
+}
+
+model Favorite {
+    user   User   @relation(fields: [userId], references: [id])
+    userId String
+
+    post   Post   @relation(fields: [postId], references: [id])
+    postId String
+
+    @@id([userId, postId])
 }
