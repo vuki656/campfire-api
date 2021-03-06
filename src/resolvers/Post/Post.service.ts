@@ -9,6 +9,7 @@ import type {
 } from './mutations/inputs'
 import { CreatePostPayload } from './mutations/payloads'
 import type { PostMetadataType } from './Post.types'
+import { PostType } from './types'
 
 export class PostService {
 
@@ -75,6 +76,26 @@ export class PostService {
         }
 
         return true
+    }
+
+    public async findFavorites(userId: string) {
+        const favorites = await prisma.post.findMany({
+            include: {
+                author: true,
+                favoritedBy: true,
+            },
+            where: {
+                favoritedBy: {
+                    some: {
+                        userId: userId,
+                    },
+                },
+            },
+        })
+
+        return favorites.map((favorite) => {
+            return new PostType(favorite)
+        })
     }
 
 }

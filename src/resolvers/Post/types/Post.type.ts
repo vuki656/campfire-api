@@ -50,6 +50,9 @@ export class PostType {
         this.link = post.link
         this.author = post.author
         this.group = post.group
+        this.siteName = post.siteName
+        this.imageLink = post.imageLink
+        this.favoritedBy = post.favoritedBy
         this.createdAt = post.createdAt
     }
 
