@@ -7,6 +7,9 @@
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "project": "./tsconfig.json"
+    },
+    "rules": {
+       "type-graphql/invalid-nullable-output-type": "off"
     }
 }
 

@@ -34,9 +34,8 @@ export class GroupResolver {
     @Query(() => GroupType, { nullable: true })
     public async group(
         @Arg('args') args: GroupArgs,
-        @Ctx() context: ContextType
     ): Promise<GroupType | null> {
-        return this.service.findOne(args, context)
+        return this.service.findOne(args)
     }
 
     @Authorized()

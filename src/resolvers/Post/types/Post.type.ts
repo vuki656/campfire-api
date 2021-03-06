@@ -6,6 +6,8 @@ import {
 import { GroupType } from '../../Group/types'
 import { UserType } from '../../User/types'
 
+import { FavoriteType } from './Favorite.type'
+
 @ObjectType()
 export class PostType {
 
@@ -36,8 +38,10 @@ export class PostType {
     @Field()
     author: UserType
 
+    @Field(() => [FavoriteType], { nullable: true })
+    favoritedBy?: FavoriteType[] | null
+
     @Field(() => GroupType, { nullable: true })
-    // eslint-disable-next-line type-graphql/invalid-nullable-output-type
     group? : GroupType | null
 
     constructor(post: PostType) {

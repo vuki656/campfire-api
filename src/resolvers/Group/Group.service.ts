@@ -87,16 +87,21 @@ export class GroupService {
         })
     }
 
-    public async findOne(args: GroupArgs, context: ContextType) {
+    public async findOne(args: GroupArgs) {
         const group = await prisma.group.findUnique({
             include: {
                 author: true,
                 posts: {
                     include: {
                         author: true,
+                        favoritedBy: {
+                            select: {
+                                userId: true,
+                            },
+                        },
                     },
                     orderBy: {
-                        createdAt: 'asc',
+                        createdAt: 'desc',
                     },
                 },
             },
