@@ -25,7 +25,7 @@ import {
     CreateGroupPayload,
     EditGroupPayload,
 } from './mutations/payloads'
-import {DeleteInvitePayload} from './mutations/payloads/DeleteInvite.payload'
+import { DeleteInvitePayload } from './mutations/payloads/DeleteInvite.payload'
 import { GroupType } from './types'
 
 @Resolver(() => GroupType)
