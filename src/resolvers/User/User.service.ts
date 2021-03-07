@@ -11,13 +11,9 @@ import type { ContextType } from '../../types'
 
 import type {
     CreateUserInput,
-    InviteUserInput,
     LogInUserInput,
 } from './mutations/inputs'
-import {
-    InviteUserPayload,
-    LogInUserPayload,
-} from './mutations/payloads'
+import { LogInUserPayload } from './mutations/payloads'
 import type { NonGroupMembersArgs } from './queries/args'
 import { UserType } from './types'
 
@@ -75,22 +71,6 @@ export class UserService {
                 username: input.username,
             },
         })
-    }
-
-    public async inviteUser(input: InviteUserInput) {
-        const invite = await prisma.invite.create({
-            data: {
-                fromUserId: input.fromUserId,
-                groupId: input.groupId,
-                toUserId: input.toUserId,
-            },
-            include: {
-                fromUser: true,
-                toUser: true,
-            },
-        })
-
-        return new InviteUserPayload(invite)
     }
 
     public async nonGroupMembers(args: NonGroupMembersArgs, userId: string) {

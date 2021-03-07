@@ -10,22 +10,15 @@ import {
 
 import { GroupService } from '.'
 
-import { InviteType } from '../User/types'
-
-import {
-    GroupArgs,
-    GroupInvitesArgs,
-} from './args'
+import { GroupArgs } from './args'
 import {
     CreateGroupInput,
-    DeleteInviteInput,
     EditGroupInput,
 } from './mutations/inputs'
 import {
     CreateGroupPayload,
     EditGroupPayload,
 } from './mutations/payloads'
-import { DeleteInvitePayload } from './mutations/payloads/DeleteInvite.payload'
 import { GroupType } from './types'
 
 @Resolver(() => GroupType)
@@ -59,22 +52,6 @@ export class GroupResolver {
         @Ctx() context: ContextType
     ): Promise<GroupType[]> {
         return this.service.findJoined(context.userId)
-    }
-
-    @Authorized()
-    @Query(() => [InviteType])
-    public async groupInvites(
-        @Arg('args') args: GroupInvitesArgs
-    ): Promise<InviteType[]> {
-        return this.service.findInvites(args)
-    }
-
-    @Authorized()
-    @Mutation(() => DeleteInvitePayload)
-    public async deleteInvite(
-        @Arg('input') input: DeleteInviteInput
-    ): Promise<DeleteInvitePayload> {
-        return this.service.deleteInvite(input)
     }
 
     @Authorized()

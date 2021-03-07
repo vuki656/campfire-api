@@ -4,8 +4,7 @@ import {
 } from 'type-graphql'
 
 import { GroupType } from '../../Group/types'
-
-import { UserType } from './User.type'
+import { UserType } from '../../User/types'
 
 @ObjectType()
 export class InviteType {

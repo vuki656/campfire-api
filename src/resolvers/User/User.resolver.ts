@@ -9,14 +9,8 @@ import {
 
 import { ContextType } from '../../types'
 
-import {
-    InviteUserInput,
-    LogInUserInput,
-} from './mutations/inputs'
-import {
-    InviteUserPayload,
-    LogInUserPayload,
-} from './mutations/payloads'
+import { LogInUserInput } from './mutations/inputs'
+import { LogInUserPayload } from './mutations/payloads'
 import { NonGroupMembersArgs } from './queries/args'
 import { UserType } from './types'
 import { UserService } from './User.service'
@@ -45,14 +39,6 @@ export class UserResolver {
        @Ctx() context: ContextType,
     ): Promise<UserType[]> {
         return this.service.nonGroupMembers(args, context.userId)
-    }
-
-    @Authorized()
-    @Mutation(() => InviteUserPayload)
-    public async inviteUser(
-        @Arg('input') input: InviteUserInput,
-    ): Promise<InviteUserPayload> {
-        return this.service.inviteUser(input)
     }
 
     @Authorized()
