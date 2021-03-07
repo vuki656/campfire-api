@@ -56,16 +56,18 @@ model Post {
 }
 
 model Favorite {
+    id String @id @default(uuid())
+
     user   User   @relation(fields: [userId], references: [id])
     userId String
 
     post   Post   @relation(fields: [postId], references: [id])
     postId String
-
-    @@id([userId, postId])
 }
 
 model Invite {
+    id String @id @default(uuid())
+
     toUser   User   @relation(name: "toUser", fields: [toUserId], references: [id])
     toUserId String
 
@@ -74,6 +76,4 @@ model Invite {
 
     groupId String
     group   Group  @relation(fields: [groupId], references: [id])
-
-    @@id([toUserId, groupId])
 }
