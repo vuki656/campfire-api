@@ -25,9 +25,7 @@ export class GroupService {
             },
         })
 
-        return groups.map((group) => {
-            return new GroupType(group)
-        })
+        return groups.map((group) => new GroupType(group))
     }
 
     public async findJoined(userId: string) {
@@ -44,9 +42,7 @@ export class GroupService {
             },
         })
 
-        return groups.map((group) => {
-            return new GroupType(group)
-        })
+        return groups.map((group) => new GroupType(group))
     }
 
     public async findOne(args: GroupArgs) {

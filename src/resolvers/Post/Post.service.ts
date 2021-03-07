@@ -28,9 +28,7 @@ export class PostService {
             },
         })
 
-        return favorites.map((favorite) => {
-            return new PostType(favorite)
-        })
+        return favorites.map((favorite) => new PostType(favorite))
     }
 
     public async create(input: CreatePostInput, context: ContextType) {

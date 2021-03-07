@@ -45,9 +45,7 @@ export class InviteService {
             },
         })
 
-        return invites.map((invite) => {
-            return new InviteType(invite)
-        })
+        return invites.map((invite) => new InviteType(invite))
     }
 
     public async createInvite(input: CreateInviteInput) {
@@ -65,6 +63,7 @@ export class InviteService {
 
         return new CreateInvitePayload(invite)
     }
+
     public async deleteInvite(input: DeleteInviteInput) {
         const invite = await prisma.invite.delete({
             include: {

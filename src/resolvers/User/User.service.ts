@@ -46,7 +46,7 @@ export class UserService {
         }
 
         const signedToken = sign(
-            { userId: user.id },
+            { userId: user?.id },
             context.secret,
             { expiresIn: '7 days' }
         )
@@ -64,13 +64,15 @@ export class UserService {
                 return response.message
             })
 
-        return prisma.user.create({
+        const user = await prisma.user.create({
             data: {
                 imageURL: imageURL,
                 password: passwordHash,
                 username: input.username,
             },
         })
+
+        return new UserType(user)
     }
 
     public async nonGroupMembers(args: NonGroupMembersArgs, userId: string) {
@@ -102,9 +104,7 @@ export class UserService {
             },
         })
 
-        return users.map((user) => {
-            return new UserType(user)
-        })
+        return users.map((user) => new UserType(user))
     }
 
 }
