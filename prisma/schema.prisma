@@ -13,12 +13,14 @@ model User {
     imageURL String
     password String
 
-    posts         Post[]
-
-    joinedGroups  Group[]
-    createdGroups Group[] @relation("author")
-
+    posts      Post[]
     favourites Favorite[]
+
+    createdGroups Group[] @relation("author")
+    joinedGroups  Group[]
+
+    receivedInvites Invite[] @relation("toUser")
+    sentInvites     Invite[] @relation("fromUser")
 }
 
 model Group {
@@ -26,8 +28,9 @@ model Group {
     name      String
     createdAt DateTime @default(now())
 
-    posts Post[]
-    users User[]
+    posts   Post[]
+    users   User[]
+    invites Invite[]
 
     author   User   @relation(name: "author", fields: [authorId], references: [id])
     authorId String
@@ -43,12 +46,11 @@ model Post {
     faviconLink String?
     imageLink   String?
 
-
     authorId String
     author   User   @relation(fields: [authorId], references: [id])
 
-    groupId     String
-    group       Group      @relation(fields: [groupId], references: [id])
+    groupId String
+    group   Group  @relation(fields: [groupId], references: [id])
 
     favoritedBy Favorite[]
 }
@@ -61,4 +63,17 @@ model Favorite {
     postId String
 
     @@id([userId, postId])
+}
+
+model Invite {
+    toUser   User   @relation(name: "toUser", fields: [toUserId], references: [id])
+    toUserId String
+
+    fromUser   User   @relation(name: "fromUser", fields: [fromUserId], references: [id])
+    fromUserId String
+
+    groupId String
+    group   Group  @relation(fields: [groupId], references: [id])
+
+    @@id([toUserId, groupId])
 }

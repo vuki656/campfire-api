@@ -11,9 +11,14 @@ import type { ContextType } from '../../types'
 
 import type {
     CreateUserInput,
+    InviteUserInput,
     LogInUserInput,
 } from './mutations/inputs'
-import { LogInUserPayload } from './mutations/payloads'
+import {
+    InviteUserPayload,
+    LogInUserPayload,
+} from './mutations/payloads'
+import type { NonGroupMembersArgs } from './queries/args'
 import { UserType } from './types'
 
 export class UserService {
@@ -63,15 +68,63 @@ export class UserService {
                 return response.message
             })
 
-        const user = await prisma.user.create({
+        return prisma.user.create({
             data: {
                 imageURL: imageURL,
                 password: passwordHash,
                 username: input.username,
             },
         })
+    }
 
-        return user
+    public async inviteUser(input: InviteUserInput) {
+        const invite = await prisma.invite.create({
+            data: {
+                fromUserId: input.fromUserId,
+                groupId: input.groupId,
+                toUserId: input.toUserId,
+            },
+            include: {
+                fromUser: true,
+                toUser: true,
+            },
+        })
+
+        return new InviteUserPayload(invite)
+    }
+
+    public async nonGroupMembers(args: NonGroupMembersArgs, userId: string) {
+        const users = await prisma.user.findMany({
+            where: {
+                NOT: [
+                    {
+                        createdGroups: {
+                            some: {
+                                authorId: userId,
+                            },
+                        },
+                    },
+                    {
+                        joinedGroups: {
+                            some: {
+                                id: args.groupId,
+                            },
+                        },
+                    },
+                    {
+                        receivedInvites: {
+                            some: {
+                                groupId: args.groupId,
+                            },
+                        },
+                    },
+                ],
+            },
+        })
+
+        return users.map((user) => {
+            return new UserType(user)
+        })
     }
 
 }

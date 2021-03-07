@@ -1,16 +1,22 @@
 import type { ContextType } from 'src/types'
 
 import { prisma } from '../../server'
+import { InviteType } from '../User/types'
 
-import type { GroupArgs } from './args'
+import type {
+    GroupArgs,
+    GroupInvitesArgs,
+} from './args'
 import type {
     CreateGroupInput,
+    DeleteInviteInput,
     EditGroupInput,
 } from './mutations/inputs'
 import {
     CreateGroupPayload,
     EditGroupPayload,
 } from './mutations/payloads'
+import { DeleteInvitePayload } from './mutations/payloads/DeleteInvite.payload'
 import { GroupType } from './types'
 
 export class GroupService {
@@ -115,6 +121,39 @@ export class GroupService {
         }
 
         return new GroupType(group)
+    }
+
+    public async findInvites(args: GroupInvitesArgs) {
+        const invites = await prisma.invite.findMany({
+            select: {
+                fromUser: true,
+                toUser: true,
+            },
+            where: {
+                groupId: args.groupId,
+            },
+        })
+
+        return invites.map((invite) => {
+            return new InviteType(invite)
+        })
+    }
+
+    public async deleteInvite(input: DeleteInviteInput) {
+        const invite = await prisma.invite.delete({
+            include: {
+                fromUser: true,
+                toUser: true,
+            },
+            where: {
+                toUserId_groupId: {
+                    groupId: input.groupId,
+                    toUserId: input.invitedUserId,
+                },
+            },
+        })
+
+        return new DeleteInvitePayload(invite)
     }
 
 }

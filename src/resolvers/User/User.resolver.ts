@@ -9,8 +9,15 @@ import {
 
 import { ContextType } from '../../types'
 
-import { LogInUserInput } from './mutations/inputs'
-import { LogInUserPayload } from './mutations/payloads'
+import {
+    InviteUserInput,
+    LogInUserInput,
+} from './mutations/inputs'
+import {
+    InviteUserPayload,
+    LogInUserPayload,
+} from './mutations/payloads'
+import { NonGroupMembersArgs } from './queries/args'
 import { UserType } from './types'
 import { UserService } from './User.service'
 
@@ -23,6 +30,22 @@ export class UserResolver {
         this.service = new UserService()
     }
 
+    @Mutation(() => LogInUserPayload)
+    public async logInUser(
+        @Arg('input') input: LogInUserInput,
+        @Ctx() context: ContextType,
+    ): Promise<LogInUserPayload> {
+        return this.service.logIn(input, context)
+    }
+
+    @Authorized()
+    @Mutation(() => InviteUserPayload)
+    public async inviteUser(
+        @Arg('input') input: InviteUserInput,
+    ): Promise<InviteUserPayload> {
+        return this.service.inviteUser(input)
+    }
+
     @Authorized()
     @Query(() => UserType, { nullable: true })
     public async user(
@@ -31,12 +54,13 @@ export class UserResolver {
         return this.service.findOne(context.userId)
     }
 
-    @Mutation(() => LogInUserPayload)
-    public async logInUser(
-        @Arg('input') input: LogInUserInput,
-        @Ctx() context: ContextType,
-    ): Promise<LogInUserPayload> {
-        return this.service.logIn(input, context)
+    @Authorized()
+    @Query(() => [UserType])
+    public async nonGroupMembers(
+       @Arg('args') args: NonGroupMembersArgs,
+       @Ctx() context: ContextType,
+    ): Promise<UserType[]> {
+        return this.service.nonGroupMembers(args, context.userId)
     }
 
 }
