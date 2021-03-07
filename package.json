@@ -2,7 +2,7 @@
     "name": "campfire-api",
     "version": "1.0.0",
     "scripts": {
-        "lint": "eslint ./src",
+        "lint": "eslint ./src/**/*.ts",
         "setup": "./bin/setup-dockerized-services.sh",
         "start-prod": "NODE_ENV=production ts-node src/index.ts",
         "start-dev": "nodemon src/index.ts",

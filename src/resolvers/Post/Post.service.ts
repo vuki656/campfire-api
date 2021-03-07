@@ -1,15 +1,15 @@
 import { getLinkPreview } from 'link-preview-js'
 
 import { prisma } from '../../server'
-import type { ContextType } from '../../types'
 
 import type {
     CreatePostInput,
     FavoritePostInput,
 } from './mutations/inputs'
 import { CreatePostPayload } from './mutations/payloads'
-import type { PostMetadataType } from './Post.types'
 import { PostType } from './types'
+import { FavoriteType } from './types/Favorite.type'
+import type { PostMetadataType } from './types/PostMetadata.type'
 
 export class PostService {
 
@@ -18,6 +18,7 @@ export class PostService {
             include: {
                 author: true,
                 favoritedBy: true,
+                metadata: true,
             },
             where: {
                 favoritedBy: {
@@ -31,7 +32,10 @@ export class PostService {
         return favorites.map((favorite) => new PostType(favorite))
     }
 
-    public async create(input: CreatePostInput, context: ContextType) {
+    public async create(
+        input: CreatePostInput,
+        userId: string
+    ) {
         const metadata: PostMetadataType = await getLinkPreview(input.link)
             .then((data) => {
                 return {
@@ -47,14 +51,18 @@ export class PostService {
 
         const post = await prisma.post.create({
             data: {
-                authorId: context.userId,
+                authorId: userId,
                 description: input.description,
-                faviconLink: metadata.faviconLink,
                 groupId: input.groupId,
-                imageLink: metadata.imageLink,
                 link: input.link,
-                siteName: metadata.siteName,
-                title: metadata.title,
+                metadata: {
+                    create: {
+                        faviconLink: metadata.faviconLink,
+                        imageLink: metadata.imageLink,
+                        siteName: metadata.siteName,
+                        title: metadata.title,
+                    },
+                },
             },
             include: {
                 author: true,
@@ -64,36 +72,39 @@ export class PostService {
         return new CreatePostPayload(post)
     }
 
-    public async favorite(input: FavoritePostInput, context: ContextType) {
-        const isFavorite = await prisma.favorite.findUnique({
+    public async favorite(
+        input: FavoritePostInput,
+        userId: string
+    ) {
+        let favoritePost = await prisma.favorite.findUnique({
             where: {
                 userId_postId:
                     {
                         postId: input.postId,
-                        userId: context.userId,
+                        userId: userId,
                     },
             },
         })
 
-        if (isFavorite) {
+        if (favoritePost) {
             await prisma.favorite.delete({
                 where: {
                     userId_postId: {
                         postId: input.postId,
-                        userId: context.userId,
+                        userId: userId,
                     },
                 },
             })
         } else {
-            await prisma.favorite.create({
+            favoritePost = await prisma.favorite.create({
                 data: {
                     postId: input.postId,
-                    userId: context.userId,
+                    userId: userId,
                 },
             })
         }
 
-        return true
+        return new FavoriteType(favoritePost)
     }
 
 }

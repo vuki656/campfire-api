@@ -10,6 +10,9 @@ import { UserType } from '../../User/types'
 export class InviteType {
 
     @Field()
+    id: string
+
+    @Field()
     fromUser: UserType
 
     @Field()

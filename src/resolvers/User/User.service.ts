@@ -20,13 +20,49 @@ import { UserType } from './types'
 export class UserService {
 
     public async findOne(userId: string) {
-        const user = await prisma.user.findUnique({ where: { id: userId } })
+        const user = await prisma.user.findUnique({
+            where: {
+                id: userId,
+            },
+        })
 
         if (!user) {
             return null
         }
 
         return new UserType(user)
+    }
+
+    public async findNonGroupMembers(args: NonGroupMembersArgs, userId: string) {
+        const users = await prisma.user.findMany({
+            where: {
+                NOT: [
+                    {
+                        createdGroups: {
+                            some: {
+                                authorId: userId,
+                            },
+                        },
+                    },
+                    {
+                        joinedGroups: {
+                            some: {
+                                id: args.groupId,
+                            },
+                        },
+                    },
+                    {
+                        receivedInvites: {
+                            some: {
+                                groupId: args.groupId,
+                            },
+                        },
+                    },
+                ],
+            },
+        })
+
+        return users.map((user) => new UserType(user))
     }
 
     public async logIn(
@@ -73,38 +109,6 @@ export class UserService {
         })
 
         return new UserType(user)
-    }
-
-    public async nonGroupMembers(args: NonGroupMembersArgs, userId: string) {
-        const users = await prisma.user.findMany({
-            where: {
-                NOT: [
-                    {
-                        createdGroups: {
-                            some: {
-                                authorId: userId,
-                            },
-                        },
-                    },
-                    {
-                        joinedGroups: {
-                            some: {
-                                id: args.groupId,
-                            },
-                        },
-                    },
-                    {
-                        receivedInvites: {
-                            some: {
-                                groupId: args.groupId,
-                            },
-                        },
-                    },
-                ],
-            },
-        })
-
-        return users.map((user) => new UserType(user))
     }
 
 }

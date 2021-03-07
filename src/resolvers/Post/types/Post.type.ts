@@ -7,6 +7,7 @@ import { GroupType } from '../../Group/types'
 import { UserType } from '../../User/types'
 
 import { FavoriteType } from './Favorite.type'
+import { PostMetadataType } from './PostMetadata.type'
 
 @ObjectType()
 export class PostType {
@@ -18,25 +19,16 @@ export class PostType {
     description: string | null
 
     @Field()
+    link: string
+
+    @Field()
     createdAt: Date
 
     @Field()
-    link: string
-
-    @Field(() => String, { nullable: true })
-    title: string | null
-
-    @Field(() => String, { nullable: true })
-    siteName: string | null
-
-    @Field(() => String, { nullable: true })
-    imageLink: string | null
-
-    @Field(() => String, { nullable: true })
-    faviconLink: string | null
-
-    @Field()
     author: UserType
+
+    @Field(() => PostMetadataType, { nullable: true })
+    metadata?: PostMetadataType | null
 
     @Field(() => [FavoriteType], { nullable: true })
     favoritedBy?: FavoriteType[] | null
@@ -48,12 +40,11 @@ export class PostType {
         this.id = post.id
         this.description = post.description
         this.link = post.link
-        this.author = post.author
-        this.group = post.group
-        this.siteName = post.siteName
-        this.imageLink = post.imageLink
-        this.favoritedBy = post.favoritedBy
         this.createdAt = post.createdAt
+        this.author = post.author
+        this.metadata = post.metadata
+        this.favoritedBy = post.favoritedBy
+        this.group = post.group
     }
 
 }

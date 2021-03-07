@@ -18,11 +18,10 @@ export class GroupType {
     @Field()
     createdAt: Date
 
-    @Field()
-    author: UserType
+    @Field(() => UserType, { nullable: true })
+    author?: UserType | null
 
     @Field(() => [PostType], { nullable: true })
-    // eslint-disable-next-line type-graphql/invalid-nullable-output-type
     posts?: PostType[] | null
 
     constructor(group: GroupType) {

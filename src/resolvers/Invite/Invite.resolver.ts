@@ -36,7 +36,7 @@ export class InviteResolver {
     public async userInvites(
         @Ctx() context: ContextType
     ): Promise<InviteType[]> {
-        return this.service.userInvites(context.userId)
+        return this.service.findUserInvites(context.userId)
     }
 
     @Authorized()
@@ -44,7 +44,7 @@ export class InviteResolver {
     public async groupInvites(
         @Arg('args') args: GroupInvitesArgs
     ): Promise<InviteType[]> {
-        return this.service.findInvites(args)
+        return this.service.findGroupInvites(args)
     }
 
     @Authorized()

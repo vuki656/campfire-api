@@ -7,9 +7,6 @@ import {
 export class DeleteInviteInput {
 
     @Field()
-    groupId: string
-
-    @Field()
-    invitedUserId: string
+    inviteId: string
 
 }

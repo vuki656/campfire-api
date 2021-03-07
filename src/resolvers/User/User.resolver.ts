@@ -38,7 +38,7 @@ export class UserResolver {
        @Arg('args') args: NonGroupMembersArgs,
        @Ctx() context: ContextType,
     ): Promise<UserType[]> {
-        return this.service.nonGroupMembers(args, context.userId)
+        return this.service.findNonGroupMembers(args, context.userId)
     }
 
     @Authorized()

@@ -13,15 +13,10 @@ import { InviteType } from './types'
 
 export class InviteService {
 
-    public async userInvites(userId: string) {
+    public async findUserInvites(userId: string) {
         const invites = await prisma.invite.findMany({
-            select: {
+            include: {
                 fromUser: true,
-                group: { // you just need the name here
-                    include: {
-                        author: true,
-                    },
-                },
                 toUser: true,
             },
             where: {
@@ -34,9 +29,9 @@ export class InviteService {
         return invites.map((invite) => new InviteType(invite))
     }
 
-    public async findInvites(args: GroupInvitesArgs) {
+    public async findGroupInvites(args: GroupInvitesArgs) {
         const invites = await prisma.invite.findMany({
-            select: {
+            include: {
                 fromUser: true,
                 toUser: true,
             },
@@ -71,10 +66,7 @@ export class InviteService {
                 toUser: true,
             },
             where: {
-                toUserId_groupId: {
-                    groupId: input.groupId,
-                    toUserId: input.invitedUserId,
-                },
+                id: input.inviteId,
             },
         })
 

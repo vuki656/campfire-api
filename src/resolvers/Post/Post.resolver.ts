@@ -16,6 +16,7 @@ import {
 import { CreatePostPayload } from './mutations/payloads'
 import { PostService } from './Post.service'
 import { PostType } from './types'
+import { FavoriteType } from './types/Favorite.type'
 
 @Resolver(() => PostType)
 export class PostResolver {
@@ -40,16 +41,16 @@ export class PostResolver {
         @Arg('input') input: CreatePostInput,
         @Ctx() context: ContextType
     ): Promise<CreatePostPayload> {
-        return this.service.create(input, context)
+        return this.service.create(input, context.userId)
     }
 
     @Authorized()
-    @Mutation(() => Boolean)
+    @Mutation(() => FavoriteType)
     public async favoritePost(
         @Arg('input') input: FavoritePostInput,
         @Ctx() context: ContextType
-    ): Promise<boolean> {
-        return this.service.favorite(input, context)
+    ): Promise<FavoriteType> {
+        return this.service.favorite(input, context.userId)
     }
 
 }

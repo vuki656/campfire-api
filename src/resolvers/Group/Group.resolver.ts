@@ -40,10 +40,10 @@ export class GroupResolver {
 
     @Authorized()
     @Query(() => [GroupType])
-    public async userGroups(
+    public async userCreatedGroup(
         @Ctx() context: ContextType
     ): Promise<GroupType[]> {
-        return this.service.findAll(context.userId)
+        return this.service.findCreated(context.userId)
     }
 
     @Authorized()
@@ -60,7 +60,7 @@ export class GroupResolver {
         @Arg('input') input: CreateGroupInput,
         @Ctx() context: ContextType
     ): Promise<CreateGroupPayload> {
-        return this.service.create(input, context)
+        return this.service.create(input, context.userId)
     }
 
     @Authorized()

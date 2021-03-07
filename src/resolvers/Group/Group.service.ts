@@ -1,5 +1,3 @@
-import type { ContextType } from 'src/types'
-
 import { prisma } from '../../server'
 
 import type { GroupArgs } from './args'
@@ -15,11 +13,8 @@ import { GroupType } from './types'
 
 export class GroupService {
 
-    public async findAll(userId: string) {
+    public async findCreated(userId: string) {
         const groups = await prisma.group.findMany({
-            include: {
-                author: true,
-            },
             where: {
                 authorId: userId,
             },
@@ -30,9 +25,6 @@ export class GroupService {
 
     public async findJoined(userId: string) {
         const groups = await prisma.group.findMany({
-            include: {
-                author: true,
-            },
             where: {
                 users: {
                     some: {
@@ -48,10 +40,10 @@ export class GroupService {
     public async findOne(args: GroupArgs) {
         const group = await prisma.group.findUnique({
             include: {
-                author: true,
                 posts: {
                     include: {
                         author: true,
+                        metadata: true,
                         favoritedBy: {
                             select: {
                                 userId: true,
@@ -77,20 +69,12 @@ export class GroupService {
 
     public async create(
         input: CreateGroupInput,
-        context: ContextType
+        userId: string
     ) {
         const group = await prisma.group.create({
             data: {
-                authorId: context.userId,
+                authorId: userId,
                 name: input.name,
-            },
-            include: {
-                author: true,
-                posts: {
-                    include: {
-                        author: true,
-                    },
-                },
             },
         })
 
@@ -101,9 +85,6 @@ export class GroupService {
         const group = await prisma.group.update({
             data: {
                 name: input.name,
-            },
-            include: {
-                author: true,
             },
             where: {
                 id: input.id,
