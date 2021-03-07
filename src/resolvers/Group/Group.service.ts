@@ -21,44 +21,6 @@ import { GroupType } from './types'
 
 export class GroupService {
 
-    public async create(
-        input: CreateGroupInput,
-        context: ContextType
-    ) {
-        const group = await prisma.group.create({
-            data: {
-                authorId: context.userId,
-                name: input.name,
-            },
-            include: {
-                author: true,
-                posts: {
-                    include: {
-                        author: true,
-                    },
-                },
-            },
-        })
-
-        return new CreateGroupPayload(group)
-    }
-
-    public async edit(input: EditGroupInput) {
-        const group = await prisma.group.update({
-            data: {
-                name: input.name,
-            },
-            include: {
-                author: true,
-            },
-            where: {
-                id: input.id,
-            },
-        })
-
-        return new EditGroupPayload(group)
-    }
-
     public async findAll(userId: string) {
         const groups = await prisma.group.findMany({
             include: {
@@ -137,6 +99,44 @@ export class GroupService {
         return invites.map((invite) => {
             return new InviteType(invite)
         })
+    }
+
+    public async create(
+        input: CreateGroupInput,
+        context: ContextType
+    ) {
+        const group = await prisma.group.create({
+            data: {
+                authorId: context.userId,
+                name: input.name,
+            },
+            include: {
+                author: true,
+                posts: {
+                    include: {
+                        author: true,
+                    },
+                },
+            },
+        })
+
+        return new CreateGroupPayload(group)
+    }
+
+    public async edit(input: EditGroupInput) {
+        const group = await prisma.group.update({
+            data: {
+                name: input.name,
+            },
+            include: {
+                author: true,
+            },
+            where: {
+                id: input.id,
+            },
+        })
+
+        return new EditGroupPayload(group)
     }
 
     public async deleteInvite(input: DeleteInviteInput) {

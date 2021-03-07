@@ -13,6 +13,26 @@ import { PostType } from './types'
 
 export class PostService {
 
+    public async findFavorites(userId: string) {
+        const favorites = await prisma.post.findMany({
+            include: {
+                author: true,
+                favoritedBy: true,
+            },
+            where: {
+                favoritedBy: {
+                    some: {
+                        userId: userId,
+                    },
+                },
+            },
+        })
+
+        return favorites.map((favorite) => {
+            return new PostType(favorite)
+        })
+    }
+
     public async create(input: CreatePostInput, context: ContextType) {
         const metadata: PostMetadataType = await getLinkPreview(input.link)
             .then((data) => {
@@ -76,26 +96,6 @@ export class PostService {
         }
 
         return true
-    }
-
-    public async findFavorites(userId: string) {
-        const favorites = await prisma.post.findMany({
-            include: {
-                author: true,
-                favoritedBy: true,
-            },
-            where: {
-                favoritedBy: {
-                    some: {
-                        userId: userId,
-                    },
-                },
-            },
-        })
-
-        return favorites.map((favorite) => {
-            return new PostType(favorite)
-        })
     }
 
 }

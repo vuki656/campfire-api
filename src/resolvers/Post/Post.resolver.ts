@@ -27,6 +27,14 @@ export class PostResolver {
     }
 
     @Authorized()
+    @Query(() => [PostType])
+    public async favoritePosts(
+        @Ctx() context: ContextType
+    ): Promise<PostType[]> {
+        return this.service.findFavorites(context.userId)
+    }
+
+    @Authorized()
     @Mutation(() => CreatePostPayload)
     public async createPost(
         @Arg('input') input: CreatePostInput,
@@ -42,14 +50,6 @@ export class PostResolver {
         @Ctx() context: ContextType
     ): Promise<boolean> {
         return this.service.favorite(input, context)
-    }
-
-    @Authorized()
-    @Query(() => [PostType])
-    public async favoritePosts(
-        @Ctx() context: ContextType
-    ): Promise<PostType[]> {
-        return this.service.findFavorites(context.userId)
     }
 
 }

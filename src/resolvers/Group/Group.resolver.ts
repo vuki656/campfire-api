@@ -46,23 +46,6 @@ export class GroupResolver {
     }
 
     @Authorized()
-    @Mutation(() => CreateGroupPayload)
-    public async createGroup(
-        @Arg('input') input: CreateGroupInput,
-        @Ctx() context: ContextType
-    ): Promise<CreateGroupPayload> {
-        return this.service.create(input, context)
-    }
-
-    @Authorized()
-    @Mutation(() => EditGroupPayload)
-    public async editGroup(
-        @Arg('input') input: EditGroupInput,
-    ): Promise<EditGroupPayload> {
-        return this.service.edit(input)
-    }
-
-    @Authorized()
     @Query(() => [GroupType])
     public async userGroups(
         @Ctx() context: ContextType
@@ -92,6 +75,23 @@ export class GroupResolver {
         @Arg('input') input: DeleteInviteInput
     ): Promise<DeleteInvitePayload> {
         return this.service.deleteInvite(input)
+    }
+
+    @Authorized()
+    @Mutation(() => CreateGroupPayload)
+    public async createGroup(
+        @Arg('input') input: CreateGroupInput,
+        @Ctx() context: ContextType
+    ): Promise<CreateGroupPayload> {
+        return this.service.create(input, context)
+    }
+
+    @Authorized()
+    @Mutation(() => EditGroupPayload)
+    public async editGroup(
+        @Arg('input') input: EditGroupInput,
+    ): Promise<EditGroupPayload> {
+        return this.service.edit(input)
     }
 
 }

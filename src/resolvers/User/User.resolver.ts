@@ -39,6 +39,15 @@ export class UserResolver {
     }
 
     @Authorized()
+    @Query(() => [UserType])
+    public async nonGroupMembers(
+       @Arg('args') args: NonGroupMembersArgs,
+       @Ctx() context: ContextType,
+    ): Promise<UserType[]> {
+        return this.service.nonGroupMembers(args, context.userId)
+    }
+
+    @Authorized()
     @Mutation(() => InviteUserPayload)
     public async inviteUser(
         @Arg('input') input: InviteUserInput,
@@ -52,15 +61,6 @@ export class UserResolver {
         @Ctx() context: ContextType,
     ): Promise<UserType | null> {
         return this.service.findOne(context.userId)
-    }
-
-    @Authorized()
-    @Query(() => [UserType])
-    public async nonGroupMembers(
-       @Arg('args') args: NonGroupMembersArgs,
-       @Ctx() context: ContextType,
-    ): Promise<UserType[]> {
-        return this.service.nonGroupMembers(args, context.userId)
     }
 
 }
