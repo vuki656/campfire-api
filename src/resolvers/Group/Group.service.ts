@@ -15,6 +15,9 @@ export class GroupService {
 
     public async findCreated(userId: string) {
         const groups = await prisma.group.findMany({
+            include: {
+                author: true,
+            },
             where: {
                 authorId: userId,
             },
@@ -25,6 +28,9 @@ export class GroupService {
 
     public async findJoined(userId: string) {
         const groups = await prisma.group.findMany({
+            include: {
+                author: true,
+            },
             where: {
                 users: {
                     some: {
@@ -40,15 +46,16 @@ export class GroupService {
     public async findOne(args: GroupArgs) {
         const group = await prisma.group.findUnique({
             include: {
+                author: true,
                 posts: {
                     include: {
                         author: true,
-                        metadata: true,
                         favoritedBy: {
                             select: {
                                 userId: true,
                             },
                         },
+                        metadata: true,
                     },
                     orderBy: {
                         createdAt: 'desc',

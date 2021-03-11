@@ -40,7 +40,7 @@ export class GroupResolver {
 
     @Authorized()
     @Query(() => [GroupType])
-    public async userCreatedGroup(
+    public async userCreatedGroups(
         @Ctx() context: ContextType
     ): Promise<GroupType[]> {
         return this.service.findCreated(context.userId)

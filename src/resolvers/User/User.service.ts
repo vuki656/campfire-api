@@ -82,12 +82,12 @@ export class UserService {
         }
 
         const signedToken = sign(
-            { userId: user?.id },
+            { userId: user.id },
             context.secret,
             { expiresIn: '7 days' }
         )
 
-        return new LogInUserPayload(signedToken)
+        return new LogInUserPayload(user.id, signedToken)
     }
 
     public async create(input: CreateUserInput) {

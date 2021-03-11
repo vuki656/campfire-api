@@ -22,8 +22,9 @@ export class InviteType {
     group?: GroupType
 
     constructor(invite: InviteType) {
+        this.id = invite.id
         this.toUser = invite.toUser
         this.fromUser = invite.fromUser
+        this.group = invite.group
     }
-
 }

@@ -6,9 +6,11 @@ import type {
     CreatePostInput,
     FavoritePostInput,
 } from './mutations/inputs'
-import { CreatePostPayload } from './mutations/payloads'
+import {
+    CreatePostPayload,
+    FavoritePostPayload,
+} from './mutations/payloads'
 import { PostType } from './types'
-import { FavoriteType } from './types/Favorite.type'
 import type { PostMetadataType } from './types/PostMetadata.type'
 
 export class PostService {
@@ -77,12 +79,18 @@ export class PostService {
         userId: string
     ) {
         let favoritePost = await prisma.favorite.findUnique({
-            where: {
-                userId_postId:
-                    {
-                        postId: input.postId,
-                        userId: userId,
+            include: {
+                post: {
+                    include: {
+                        author: true,
                     },
+                },
+            },
+            where: {
+                userId_postId: {
+                    postId: input.postId,
+                    userId: userId,
+                },
             },
         })
 
@@ -101,10 +109,17 @@ export class PostService {
                     postId: input.postId,
                     userId: userId,
                 },
+                include: {
+                    post: {
+                        include: {
+                            author: true,
+                        },
+                    },
+                },
             })
         }
 
-        return new FavoriteType(favoritePost)
+        return new FavoritePostPayload(favoritePost.post)
     }
 
 }

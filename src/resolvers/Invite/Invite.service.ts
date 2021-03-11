@@ -31,8 +31,9 @@ export class InviteService {
 
     public async findGroupInvites(args: GroupInvitesArgs) {
         const invites = await prisma.invite.findMany({
-            include: {
+            select: {
                 fromUser: true,
+                id: true,
                 toUser: true,
             },
             where: {
