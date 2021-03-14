@@ -2,11 +2,15 @@ import { prisma } from '../../server'
 
 import type { GroupInvitesArgs } from './args'
 import type {
+    AcceptInviteInput,
     CreateInviteInput,
+    DeclineInviteInput,
     DeleteInviteInput,
 } from './mutations/inputs'
 import {
+    AcceptInvitePayload,
     CreateInvitePayload,
+    DeclineInvitePayload,
     DeleteInvitePayload,
 } from './mutations/payloads'
 import { InviteType } from './types'
@@ -17,6 +21,7 @@ export class InviteService {
         const invites = await prisma.invite.findMany({
             include: {
                 fromUser: true,
+                group: true,
                 toUser: true,
             },
             where: {
@@ -58,6 +63,43 @@ export class InviteService {
         })
 
         return new CreateInvitePayload(invite)
+    }
+
+    public async declineInvite(input: DeclineInviteInput) {
+        const invite = await prisma.invite.delete({
+            include: {
+                fromUser: true,
+                toUser: true,
+            },
+            where: {
+                id: input.inviteId,
+            },
+        })
+
+        return new DeclineInvitePayload(invite)
+    }
+
+    public async acceptInvite(input: AcceptInviteInput, userId: string) {
+        const user = await prisma.user.update({
+            data: {
+                joinedGroups: {
+                    connect: {
+                        id: input.groupId,
+                    },
+                },
+            },
+            where: {
+                id: userId,
+            },
+        })
+
+        await prisma.invite.delete({
+            where: {
+                id: input.inviteId,
+            },
+        })
+
+        return new AcceptInvitePayload(user)
     }
 
     public async deleteInvite(input: DeleteInviteInput) {

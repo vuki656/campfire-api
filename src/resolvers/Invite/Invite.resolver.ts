@@ -13,11 +13,15 @@ import { ContextType } from '../../types'
 
 import { GroupInvitesArgs } from './args'
 import {
+    AcceptInviteInput,
     CreateInviteInput,
+    DeclineInviteInput,
     DeleteInviteInput,
 } from './mutations/inputs'
 import {
+    AcceptInvitePayload,
     CreateInvitePayload,
+    DeclineInvitePayload,
     DeleteInvitePayload,
 } from './mutations/payloads'
 import { InviteType } from './types'
@@ -53,6 +57,23 @@ export class InviteResolver {
         @Arg('input') input: CreateInviteInput,
     ): Promise<CreateInvitePayload> {
         return this.service.createInvite(input)
+    }
+
+    @Authorized()
+    @Mutation(() => AcceptInvitePayload)
+    public async acceptInvite(
+        @Arg('input') input: AcceptInviteInput,
+        @Ctx() context: ContextType
+    ): Promise<AcceptInvitePayload> {
+        return this.service.acceptInvite(input, context.userId)
+    }
+
+    @Authorized()
+    @Mutation(() => DeclineInvitePayload)
+    public async declineInvite(
+        @Arg('input') input: DeclineInviteInput
+    ): Promise<DeclineInvitePayload> {
+        return this.service.declineInvite(input)
     }
 
     @Authorized()
