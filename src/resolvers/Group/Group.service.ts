@@ -1,13 +1,19 @@
 import { prisma } from '../../server'
+import { UserType } from '../User/types'
 
-import type { GroupArgs } from './args'
+import type {
+    GroupArgs,
+    GroupMembersArgs,
+} from './args'
 import type {
     CreateGroupInput,
     EditGroupInput,
+    KickUserFromGroupInput,
 } from './mutations/inputs'
 import {
     CreateGroupPayload,
     EditGroupPayload,
+    KickUserFromGroupPayload,
 } from './mutations/payloads'
 import { GroupType } from './types'
 
@@ -74,6 +80,20 @@ export class GroupService {
         return new GroupType(group)
     }
 
+    public async findMembers(args: GroupMembersArgs) {
+        const members = await prisma.user.findMany({
+            where: {
+                joinedGroups: {
+                    some: {
+                        id: args.groupId,
+                    },
+                },
+            },
+        })
+
+        return members.map((member) => new UserType(member))
+    }
+
     public async create(
         input: CreateGroupInput,
         userId: string
@@ -99,6 +119,23 @@ export class GroupService {
         })
 
         return new EditGroupPayload(group)
+    }
+
+    public async kickUser(input: KickUserFromGroupInput) {
+        const group = await prisma.group.update({
+            data: {
+                users: {
+                    disconnect: {
+                        id: input.userId,
+                    },
+                },
+            },
+            where: {
+                id: input.groupId,
+            },
+        })
+
+        return new KickUserFromGroupPayload(group)
     }
 
 }

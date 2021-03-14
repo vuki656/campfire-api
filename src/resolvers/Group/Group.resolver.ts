@@ -10,14 +10,21 @@ import {
 
 import { GroupService } from '.'
 
-import { GroupArgs } from './args'
+import { UserType } from '../User/types'
+
+import {
+    GroupArgs,
+    GroupMembersArgs,
+} from './args'
 import {
     CreateGroupInput,
     EditGroupInput,
+    KickUserFromGroupInput,
 } from './mutations/inputs'
 import {
     CreateGroupPayload,
     EditGroupPayload,
+    KickUserFromGroupPayload,
 } from './mutations/payloads'
 import { GroupType } from './types'
 
@@ -47,6 +54,14 @@ export class GroupResolver {
     }
 
     @Authorized()
+    @Query(() => [UserType])
+    public async groupMembers(
+        @Arg('args') args: GroupMembersArgs,
+    ): Promise<UserType[]> {
+        return this.service.findMembers(args)
+    }
+
+    @Authorized()
     @Query(() => [GroupType])
     public async userJoinedGroups(
         @Ctx() context: ContextType
@@ -69,6 +84,14 @@ export class GroupResolver {
         @Arg('input') input: EditGroupInput,
     ): Promise<EditGroupPayload> {
         return this.service.edit(input)
+    }
+
+    @Authorized()
+    @Mutation(() => KickUserFromGroupPayload)
+    public async kickUserFromGroup(
+        @Arg('input') input: KickUserFromGroupInput,
+    ): Promise<KickUserFromGroupPayload> {
+        return this.service.kickUser(input)
     }
 
 }
