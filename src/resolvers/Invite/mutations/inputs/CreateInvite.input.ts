@@ -4,7 +4,7 @@ import {
 } from 'type-graphql'
 
 @InputType()
-export class InviteUserInput {
+export class CreateInviteInput {
 
     @Field()
     fromUserId: string

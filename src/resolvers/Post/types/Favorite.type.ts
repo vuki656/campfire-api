@@ -9,4 +9,8 @@ export class FavoriteType {
     @Field()
     userId: string
 
+    constructor(favorite: FavoriteType) {
+        this.userId = favorite.userId
+    }
+
 }

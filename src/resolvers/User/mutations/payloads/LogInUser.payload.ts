@@ -7,10 +7,14 @@ import {
 export class LogInUserPayload {
 
     @Field()
+    userId: string
+
+    @Field()
     token: string
 
-    constructor(token: string) {
+    constructor(userId: string, token: string) {
         this.token = token
+        this.userId = userId
     }
 
 }

@@ -10,22 +10,15 @@ import {
 
 import { GroupService } from '.'
 
-import { InviteType } from '../User/types'
-
-import {
-    GroupArgs,
-    GroupInvitesArgs,
-} from './args'
+import { GroupArgs } from './args'
 import {
     CreateGroupInput,
-    DeleteInviteInput,
     EditGroupInput,
 } from './mutations/inputs'
 import {
     CreateGroupPayload,
     EditGroupPayload,
 } from './mutations/payloads'
-import {DeleteInvitePayload} from './mutations/payloads/DeleteInvite.payload'
 import { GroupType } from './types'
 
 @Resolver(() => GroupType)
@@ -46,28 +39,11 @@ export class GroupResolver {
     }
 
     @Authorized()
-    @Mutation(() => CreateGroupPayload)
-    public async createGroup(
-        @Arg('input') input: CreateGroupInput,
-        @Ctx() context: ContextType
-    ): Promise<CreateGroupPayload> {
-        return this.service.create(input, context)
-    }
-
-    @Authorized()
-    @Mutation(() => EditGroupPayload)
-    public async editGroup(
-        @Arg('input') input: EditGroupInput,
-    ): Promise<EditGroupPayload> {
-        return this.service.edit(input)
-    }
-
-    @Authorized()
     @Query(() => [GroupType])
-    public async userGroups(
+    public async userCreatedGroups(
         @Ctx() context: ContextType
     ): Promise<GroupType[]> {
-        return this.service.findAll(context.userId)
+        return this.service.findCreated(context.userId)
     }
 
     @Authorized()
@@ -79,19 +55,20 @@ export class GroupResolver {
     }
 
     @Authorized()
-    @Query(() => [InviteType])
-    public async groupInvites(
-        @Arg('args') args: GroupInvitesArgs
-    ): Promise<InviteType[]> {
-        return this.service.findInvites(args)
+    @Mutation(() => CreateGroupPayload)
+    public async createGroup(
+        @Arg('input') input: CreateGroupInput,
+        @Ctx() context: ContextType
+    ): Promise<CreateGroupPayload> {
+        return this.service.create(input, context.userId)
     }
 
     @Authorized()
-    @Mutation(() => DeleteInvitePayload)
-    public async deleteInvite(
-        @Arg('input') input: DeleteInviteInput
-    ): Promise<DeleteInvitePayload> {
-        return this.service.deleteInvite(input)
+    @Mutation(() => EditGroupPayload)
+    public async editGroup(
+        @Arg('input') input: EditGroupInput,
+    ): Promise<EditGroupPayload> {
+        return this.service.edit(input)
     }
 
 }

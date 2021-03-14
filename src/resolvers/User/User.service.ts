@@ -11,20 +11,20 @@ import type { ContextType } from '../../types'
 
 import type {
     CreateUserInput,
-    InviteUserInput,
     LogInUserInput,
 } from './mutations/inputs'
-import {
-    InviteUserPayload,
-    LogInUserPayload,
-} from './mutations/payloads'
+import { LogInUserPayload } from './mutations/payloads'
 import type { NonGroupMembersArgs } from './queries/args'
 import { UserType } from './types'
 
 export class UserService {
 
     public async findOne(userId: string) {
-        const user = await prisma.user.findUnique({ where: { id: userId } })
+        const user = await prisma.user.findUnique({
+            where: {
+                id: userId,
+            },
+        })
 
         if (!user) {
             return null
@@ -33,67 +33,7 @@ export class UserService {
         return new UserType(user)
     }
 
-    public async logIn(
-        input: LogInUserInput,
-        context: ContextType
-    ) {
-        let user = await prisma.user.findUnique({ where: { username: input.username } })
-
-        if (!user) {
-            user = await this.create(input)
-        } else {
-            const isPasswordValid = compareSync(input.password, user.password)
-
-            if (!isPasswordValid) {
-                throw new UserInputError('Error', { password: 'Wrong password.' })
-            }
-        }
-
-        const signedToken = sign(
-            { userId: user.id },
-            context.secret,
-            { expiresIn: '7 days' }
-        )
-
-        return new LogInUserPayload(signedToken)
-    }
-
-    public async create(input: CreateUserInput) {
-        const passwordHash = await hash(input.password, 10)
-
-        const imageURL = await fetch('https://dog.ceo/api/breeds/image/random')
-            .then(async (responseJSON) => {
-                const response = await responseJSON.json() as { message: string }
-
-                return response.message
-            })
-
-        return prisma.user.create({
-            data: {
-                imageURL: imageURL,
-                password: passwordHash,
-                username: input.username,
-            },
-        })
-    }
-
-    public async inviteUser(input: InviteUserInput) {
-        const invite = await prisma.invite.create({
-            data: {
-                fromUserId: input.fromUserId,
-                groupId: input.groupId,
-                toUserId: input.toUserId,
-            },
-            include: {
-                fromUser: true,
-                toUser: true,
-            },
-        })
-
-        return new InviteUserPayload(invite)
-    }
-
-    public async nonGroupMembers(args: NonGroupMembersArgs, userId: string) {
+    public async findNonGroupMembers(args: NonGroupMembersArgs, userId: string) {
         const users = await prisma.user.findMany({
             where: {
                 NOT: [
@@ -122,9 +62,53 @@ export class UserService {
             },
         })
 
-        return users.map((user) => {
-            return new UserType(user)
+        return users.map((user) => new UserType(user))
+    }
+
+    public async logIn(
+        input: LogInUserInput,
+        context: ContextType
+    ) {
+        let user = await prisma.user.findUnique({ where: { username: input.username } })
+
+        if (!user) {
+            user = await this.create(input)
+        } else {
+            const isPasswordValid = compareSync(input.password, user.password)
+
+            if (!isPasswordValid) {
+                throw new UserInputError('Error', { password: 'Wrong password.' })
+            }
+        }
+
+        const signedToken = sign(
+            { userId: user.id },
+            context.secret,
+            { expiresIn: '7 days' }
+        )
+
+        return new LogInUserPayload(user.id, signedToken)
+    }
+
+    public async create(input: CreateUserInput) {
+        const passwordHash = await hash(input.password, 10)
+
+        const imageURL = await fetch('https://dog.ceo/api/breeds/image/random')
+            .then(async (responseJSON) => {
+                const response = await responseJSON.json() as { message: string }
+
+                return response.message
+            })
+
+        const user = await prisma.user.create({
+            data: {
+                imageURL: imageURL,
+                password: passwordHash,
+                username: input.username,
+            },
         })
+
+        return new UserType(user)
     }
 
 }

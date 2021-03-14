@@ -3,10 +3,10 @@ import {
     ObjectType,
 } from 'type-graphql'
 
-import { InviteType } from '../../../User/types'
+import { InviteType } from '../../types'
 
 @ObjectType()
-export class DeleteInvitePayload {
+export class CreateInvitePayload {
 
     @Field()
     invite: InviteType

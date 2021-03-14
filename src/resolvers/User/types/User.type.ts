@@ -15,6 +15,9 @@ export class UserType {
     @Field()
     imageURL: string
 
+    // This shouldn't be exposed with a field, its here for usage with internal logic only
+    password: string
+
     constructor(user: UserType) {
         this.id = user.id
         this.username = user.username

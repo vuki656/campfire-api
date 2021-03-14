@@ -37,14 +37,11 @@ model Group {
 }
 
 model Post {
-    id          String   @id @default(uuid())
+    id          String     @id @default(uuid())
     description String?
     link        String
-    createdAt   DateTime @default(now())
-    title       String?
-    siteName    String?
-    faviconLink String?
-    imageLink   String?
+    createdAt   DateTime   @default(now())
+    favoritedBy Favorite[]
 
     authorId String
     author   User   @relation(fields: [authorId], references: [id])
@@ -52,7 +49,18 @@ model Post {
     groupId String
     group   Group  @relation(fields: [groupId], references: [id])
 
-    favoritedBy Favorite[]
+    metadata PostMetadata?
+}
+
+model PostMetadata {
+    id          String  @id @default(uuid())
+    title       String?
+    siteName    String?
+    faviconLink String?
+    imageLink   String?
+
+    postId String
+    post   Post   @relation(fields: [postId], references: [id])
 }
 
 model Favorite {
@@ -66,6 +74,8 @@ model Favorite {
 }
 
 model Invite {
+    id String @id @default(uuid())
+
     toUser   User   @relation(name: "toUser", fields: [toUserId], references: [id])
     toUserId String
 
@@ -74,6 +84,4 @@ model Invite {
 
     groupId String
     group   Group  @relation(fields: [groupId], references: [id])
-
-    @@id([toUserId, groupId])
 }

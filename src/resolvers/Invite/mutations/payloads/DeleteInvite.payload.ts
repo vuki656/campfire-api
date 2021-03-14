@@ -6,7 +6,7 @@ import {
 import { InviteType } from '../../types'
 
 @ObjectType()
-export class InviteUserPayload {
+export class DeleteInvitePayload {
 
     @Field()
     invite: InviteType
