@@ -1,7 +1,8 @@
 import { PrismaClient } from '@prisma/client'
 import { ApolloServer } from 'apollo-server'
 
-import { decodeToken } from '../lib/decodeToken'
+import { getUserIdFromToken } from '../lib/getUserIdFromToken'
+import type { ContextType } from '../types'
 
 import { getSchema } from './schema'
 
@@ -12,16 +13,12 @@ const SECRET = process.env.JWT_SECRET as string
 const server = new ApolloServer({
     context: ({ req }) => {
         const tokenPayload = req.headers.token as string
-        // eslinv-disable-next-line @typescript-eslint/no-confusing-void-expression
-        const decodedToken = decodeToken(tokenPayload)
-
-        console.log(1)
 
         return {
             secret: SECRET,
-            token: tokenPayload,
-            userId: decodedToken.userId,
-        }
+            tokenPayload: tokenPayload,
+            userId: getUserIdFromToken(tokenPayload),
+        } as ContextType
     },
     playground: true,
     schema: getSchema(),

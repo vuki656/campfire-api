@@ -100,15 +100,20 @@ export class UserService {
     }
 
     public async verify(context: ContextType) {
-        const { secret, token } = context
+        const { secret, tokenPayload } = context
 
-        console.log(context)
+        const [, token] = tokenPayload.split(' ')
+
         const decodedToken = decode(token) as DecodedTokenType
 
+        console.log(5)
         if (!decodedToken) {
+            console.log(decodedToken)
+
             return new VerifyUserPayload(false)
         }
 
+        console.log(4)
         const userExists = Boolean(
             await prisma.user.findUnique({
                 where: {
@@ -117,14 +122,17 @@ export class UserService {
             })
         )
 
+        console.log(3)
         if (!userExists) {
             return new VerifyUserPayload(false)
         }
 
+        console.log(2)
         if (!token) {
             return new VerifyUserPayload(false)
         }
 
+        console.log(1)
         verify(token, secret, (error) => {
             if (error) throw new AuthenticationError('Authentication Failed')
         })

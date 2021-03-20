@@ -1,5 +1,5 @@
 export type ContextType = {
-    token: string
+    tokenPayload: string
     secret: string
     userId: string
 }

@@ -44,7 +44,6 @@ export class UserResolver {
         return this.service.findNonGroupMembers(args, context.userId)
     }
 
-    @Authorized()
     @Query(() => VerifyUserPayload)
     public async verifyUser(
         @Ctx() context: ContextType,

@@ -2,24 +2,20 @@ import { verify } from 'jsonwebtoken'
 
 const SECRET = process.env.JWT_SECRET as string
 
-type AuthDataType = {
-    userId: string
-}
-
-export const decodeToken = (tokenPayload: string): AuthDataType => {
+export const getUserIdFromToken = (tokenPayload: string): string => {
     const [, token] = tokenPayload.split(' ')
-    const authData: AuthDataType = { userId: '' }
+    let userId = ''
 
     if (token) {
         verify(token, SECRET, (error, result) => {
             if (!error) {
                 // @ts-expect-error
-                const userId = result?.userId ?? ''
+                const decodedUserId = result?.userId ?? ''
 
-                authData.userId = userId
+                userId = decodedUserId
             }
         })
     }
 
-    return authData
+    return userId
 }
