@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import { ApolloServer } from 'apollo-server'
-import { verify } from 'jsonwebtoken'
+
+import { decodeToken } from '../lib/decodeToken'
 
 import { getSchema } from './schema'
 
@@ -10,19 +11,11 @@ const SECRET = process.env.JWT_SECRET as string
 
 const server = new ApolloServer({
     context: ({ req }) => {
-        const tokenPayload = req.headers.token as string ?? ''
-        const decodedToken: { userId: string } = { userId: '' }
+        const tokenPayload = req.headers.token as string
+        // eslinv-disable-next-line @typescript-eslint/no-confusing-void-expression
+        const decodedToken = decodeToken(tokenPayload)
 
-        const [, token] = tokenPayload.split(' ')
-
-        if (token) {
-            verify(token, SECRET, (error, result) => {
-                if (!error) {
-                    // @ts-expect-error
-                    decodedToken.userId = result?.userId as { userId: string }
-                }
-            })
-        }
+        console.log(1)
 
         return {
             secret: SECRET,

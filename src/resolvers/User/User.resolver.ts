@@ -10,7 +10,10 @@ import {
 import { ContextType } from '../../types'
 
 import { LogInUserInput } from './mutations/inputs'
-import { LogInUserPayload } from './mutations/payloads'
+import {
+    LogInUserPayload,
+    VerifyUserPayload,
+} from './mutations/payloads'
 import { NonGroupMembersArgs } from './queries/args'
 import { UserType } from './types'
 import { UserService } from './User.service'
@@ -35,10 +38,18 @@ export class UserResolver {
     @Authorized()
     @Query(() => [UserType])
     public async nonGroupMembers(
-       @Arg('args') args: NonGroupMembersArgs,
-       @Ctx() context: ContextType,
+        @Arg('args') args: NonGroupMembersArgs,
+        @Ctx() context: ContextType,
     ): Promise<UserType[]> {
         return this.service.findNonGroupMembers(args, context.userId)
+    }
+
+    @Authorized()
+    @Query(() => VerifyUserPayload)
+    public async verifyUser(
+        @Ctx() context: ContextType,
+    ): Promise<VerifyUserPayload> {
+        return this.service.verify(context)
     }
 
     @Authorized()

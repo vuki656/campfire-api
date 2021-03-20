@@ -1,9 +1,16 @@
-import { UserInputError } from 'apollo-server'
+import {
+    AuthenticationError,
+    UserInputError,
+} from 'apollo-server'
 import {
     compareSync,
     hash,
 } from 'bcryptjs'
-import { sign } from 'jsonwebtoken'
+import {
+    decode,
+    sign,
+    verify,
+} from 'jsonwebtoken'
 import fetch from 'node-fetch'
 
 import { prisma } from '../../server'
@@ -14,8 +21,10 @@ import type {
     LogInUserInput,
 } from './mutations/inputs'
 import { LogInUserPayload } from './mutations/payloads'
+import { VerifyUserPayload } from './mutations/payloads/VerifyUser.payload'
 import type { NonGroupMembersArgs } from './queries/args'
 import { UserType } from './types'
+import type { DecodedTokenType } from './User.types'
 
 export class UserService {
 
@@ -88,6 +97,39 @@ export class UserService {
         )
 
         return new LogInUserPayload(user.id, signedToken)
+    }
+
+    public async verify(context: ContextType) {
+        const { secret, token } = context
+
+        console.log(context)
+        const decodedToken = decode(token) as DecodedTokenType
+
+        if (!decodedToken) {
+            return new VerifyUserPayload(false)
+        }
+
+        const userExists = Boolean(
+            await prisma.user.findUnique({
+                where: {
+                    id: decodedToken.userId,
+                },
+            })
+        )
+
+        if (!userExists) {
+            return new VerifyUserPayload(false)
+        }
+
+        if (!token) {
+            return new VerifyUserPayload(false)
+        }
+
+        verify(token, secret, (error) => {
+            if (error) throw new AuthenticationError('Authentication Failed')
+        })
+
+        return new VerifyUserPayload(true)
     }
 
     public async create(input: CreateUserInput) {
