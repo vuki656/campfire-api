@@ -8,6 +8,7 @@
         "start-dev": "NODE_ENV=development nodemon src/index.ts",
         "migrate": "npx prisma migrate dev --name init --preview-feature",
         "sync": "prisma generate",
+        "validate-schema": "ts-node src/server/validate-schema.ts",
         "studio": "npx prisma studio"
     },
     "dependencies": {
