@@ -22,7 +22,6 @@ jobs:
 
       - name: Lint API
         run: |
-          cd api
           yarn lint
 
   Build:
@@ -42,5 +41,4 @@ jobs:
 
       - name: Validate API Build
         run: |
-          cd api
           yarn validate-schema
