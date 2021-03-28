@@ -9,10 +9,11 @@ import { getSchema } from './schema'
 export const prisma = new PrismaClient()
 
 const SECRET = process.env.JWT_SECRET as string
+const isDevelopment = process.env.NODE_ENV !== 'production'
 
-const server = new ApolloServer({
+export const server = new ApolloServer({
     context: ({ req }) => {
-        const tokenPayload = req.headers.token as string
+        const tokenPayload = req.headers.token as string ?? ''
 
         return {
             secret: SECRET,
@@ -20,7 +21,8 @@ const server = new ApolloServer({
             userId: getUserIdFromToken(tokenPayload),
         } as ContextType
     },
-    playground: true,
+    introspection: isDevelopment,
+    playground: isDevelopment,
     schema: getSchema(),
 })
 
